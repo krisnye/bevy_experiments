@@ -18,7 +18,7 @@ impl Plugin for TrianglePlugin {
     fn build(&self, app: &mut App) {
         app
             .add_systems(OnEnter(STATE), setup)
-            .add_systems(Update, system.run_if(state_exists_and_equals(STATE)))
+            .add_systems(Update, system.run_if(in_state(STATE)))
             .add_systems(OnExit(STATE), cleanup);
     }
 }
