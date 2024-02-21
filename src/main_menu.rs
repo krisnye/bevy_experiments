@@ -1,6 +1,6 @@
 use bevy::prelude::*;
+use bevy_egui::*;
 use super::AppState;
-use bevy_egui::{egui, EguiContexts, EguiPlugin};
 
 pub struct MainMenuPlugin;
 
@@ -12,11 +12,7 @@ impl Plugin for MainMenuPlugin {
     }
 }
 
-fn setup(
-    mut commands: Commands,
-    mut materials: ResMut<Assets<StandardMaterial>>,
-    mut meshes: ResMut<Assets<Mesh>>,
-) {
+fn setup() {
     println!("Main Menu Setup");
 }
 
@@ -32,9 +28,10 @@ fn system(mut contexts: EguiContexts, mut app_state: ResMut<NextState<AppState>>
             // Changes app state to "Game"
             app_state.set(AppState::Shapes);
         }
-    });
-}
+        if ui.button("Physics Blocks").clicked() {
+            // Changes app state to "Game"
+            app_state.set(AppState::PhysicsBlocks);
+        }
 
-fn cleanup() {
-    println!("Main Menu cleanup");
+    });
 }

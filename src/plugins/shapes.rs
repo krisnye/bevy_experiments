@@ -1,5 +1,7 @@
+use std::f32::consts::PI;
+use bevy::math::*;
 use bevy::prelude::*;
-use crate::plugins::AppState;
+use super::AppState;
 
 pub struct ShapesPlugin;
 
@@ -36,15 +38,51 @@ fn setup(
         ..default()
     }).insert(LocalStateFlag);
 
-    // add a sphere to the end.
+    // sphere
     commands.spawn(PbrBundle {
-        mesh: meshes.add(Mesh::from(shape::UVSphere {
-            radius: 0.5,
-            sectors: 16,
-            stacks: 16,
-        })),
-        material: materials.add(Color::BEIGE),
-        transform: Transform::from_scale(Vec3::splat(0.5)),
+        mesh: meshes.add(Mesh::from(primitives::Sphere { radius: 0.5 })),
+        material: materials.add(Color::RED),
+        transform: Transform::from_xyz(-2., 1., 0.),
+        ..Default::default()
+    }).insert(LocalStateFlag);
+
+    // torus
+    commands.spawn(PbrBundle {
+        mesh: meshes.add(Mesh::from(primitives::Torus { minor_radius: 0.25, major_radius: 0.5 })),
+        material: materials.add(Color::ORANGE),
+        transform: Transform::from_xyz(0., 1., 0.).with_rotation(Quat::from_rotation_x(PI / 2.0)),
+        ..Default::default()
+    }).insert(LocalStateFlag);
+
+    // cube
+    commands.spawn(PbrBundle {
+        mesh: meshes.add(Mesh::from(primitives::Cuboid { half_size: Vec3::splat(0.5) })),
+        material: materials.add(Color::YELLOW),
+        transform: Transform::from_xyz(2., 1., 0.),
+        ..Default::default()
+    }).insert(LocalStateFlag);
+
+    // capsule
+    commands.spawn(PbrBundle {
+        mesh: meshes.add(Mesh::from(primitives::Capsule3d { radius: 0.5, half_length: 0.5})),
+        material: materials.add(Color::GREEN),
+        transform: Transform::from_xyz(-2., -1., 0.),
+        ..Default::default()
+    }).insert(LocalStateFlag);
+
+    // cylinder
+    commands.spawn(PbrBundle {
+        mesh: meshes.add(Mesh::from(primitives::Cylinder { radius: 0.5, half_height: 0.5 })),
+        material: materials.add(Color::BLUE),
+        transform: Transform::from_xyz(0., -1., 0.),
+        ..Default::default()
+    }).insert(LocalStateFlag);
+
+    // plane
+    commands.spawn(PbrBundle {
+        mesh: meshes.add(Mesh::from(primitives::Plane3d { normal: Direction3d::from_xyz(0., 1., 0.).unwrap() })),
+        material: materials.add(Color::VIOLET),
+        transform: Transform::from_xyz(2., -1., 0.),
         ..Default::default()
     }).insert(LocalStateFlag);
 }
