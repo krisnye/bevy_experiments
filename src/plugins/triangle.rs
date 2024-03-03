@@ -8,7 +8,7 @@ use super::AppState;
 //  This local state component is added to all entities we create in our system.
 //  This makes it easy to query for and despawn all entities with this component on cleanup.
 #[derive(Component)]
-struct LocalStateFlag;
+struct CleanupFlag;
 
 pub struct TrianglePlugin;
 
@@ -32,13 +32,13 @@ fn setup(
     commands.spawn(PointLightBundle {
         transform: Transform::from_xyz(1.0, 2.0, 1.0),
         ..default()
-    }).insert(LocalStateFlag);
+    }).insert(CleanupFlag);
 
     //  camera
     commands.spawn(Camera3dBundle {
         transform: Transform::from_xyz(0.0, 0.0, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
         ..default()
-    }).insert(LocalStateFlag);
+    }).insert(CleanupFlag);
 
     // Triangle Mesh
     let mut mesh = Mesh::new(PrimitiveTopology::TriangleList, RenderAssetUsages::RENDER_WORLD);
@@ -76,13 +76,13 @@ fn setup(
         mesh: mesh_handle,
         material: material_handle,
         ..Default::default()
-    }).insert(LocalStateFlag);
+    }).insert(CleanupFlag);
 }
 
 fn system() {
 }
 
-fn cleanup(mut commands: Commands, query: Query<Entity, With<LocalStateFlag>>) {
+fn cleanup(mut commands: Commands, query: Query<Entity, With<CleanupFlag>>) {
     println!("Triangle cleanup");
     for entity in query.iter() {
         commands.entity(entity).despawn_recursive();

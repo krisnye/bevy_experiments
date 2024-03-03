@@ -7,7 +7,7 @@ use bevy_xpbd_3d::prelude::*;
 //  This local state component is added to all entities we create in our system.
 //  This makes it easy to query for and despawn all entities with this component on cleanup.
 #[derive(Component)]
-struct LocalStateFlag;
+struct CleanupFlag;
 
 pub struct PhysicsBlocksPlugin;
 
@@ -43,7 +43,7 @@ fn setup(
         },
         transform: Transform::from_xyz(4.0, 8.0, 8.0),
         ..default()
-    }).insert(LocalStateFlag);
+    }).insert(CleanupFlag);
     // Camera
     commands.spawn(Camera3dBundle {
         camera: Camera {
@@ -54,7 +54,7 @@ fn setup(
         ..default()
     })
         .insert(ScreenSpaceAmbientOcclusionBundle::default())   //  screen space ambient occlusion!
-        .insert(LocalStateFlag);
+        .insert(CleanupFlag);
     // Orion's preferred fighting arena: Infinite Flat Plane
     commands.spawn((
         RigidBody::Static,
@@ -65,7 +65,7 @@ fn setup(
             material: materials.add(Color::rgb(0.3, 0.5, 0.3)),
             ..default()
         },
-    )).insert(LocalStateFlag);
+    )).insert(CleanupFlag);
 
     let cube_mesh = meshes.add(Mesh::from(primitives::Cuboid { half_size: Vec3::splat(0.5)}));
     let material_red = materials.add(Color::rgb(0.8, 0.7, 0.6));
@@ -91,7 +91,7 @@ fn setup(
                         transform: Transform::from_xyz(size + x as f32, size / 2. + y as f32, size + z as f32),
                         ..default()
                     },
-                )).insert(LocalStateFlag);
+                )).insert(CleanupFlag);
             }
         }
     }
@@ -108,13 +108,13 @@ fn setup(
             transform: Transform::from_xyz(0., 4.0, 40.0),
             ..default()
         },
-    )).insert(LocalStateFlag);
+    )).insert(CleanupFlag);
 }
 
 fn system() {
 }
 
-fn cleanup(mut commands: Commands, query: Query<Entity, With<LocalStateFlag>>) {
+fn cleanup(mut commands: Commands, query: Query<Entity, With<CleanupFlag>>) {
     println!("Physics Blocks cleanup");
     for entity in query.iter() {
         commands.entity(entity).despawn_recursive();

@@ -8,7 +8,7 @@ pub struct ShapesPlugin;
 //  This local state component is added to all entities we create in our system.
 //  This makes it easy to query for and despawn all entities with this component on cleanup.
 #[derive(Component)]
-struct LocalStateFlag;
+struct CleanupFlag;
 
 const STATE : AppState = AppState::Shapes;
 
@@ -30,13 +30,13 @@ fn setup(
     commands.spawn(PointLightBundle {
         transform: Transform::from_xyz(1.0, 2.0, 1.0),
         ..default()
-    }).insert(LocalStateFlag);
+    }).insert(CleanupFlag);
 
     //  camera
     commands.spawn(Camera3dBundle {
         transform: Transform::from_xyz(0.0, 0.0, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
         ..default()
-    }).insert(LocalStateFlag);
+    }).insert(CleanupFlag);
 
     // sphere
     commands.spawn(PbrBundle {
@@ -44,7 +44,7 @@ fn setup(
         material: materials.add(Color::RED),
         transform: Transform::from_xyz(-2., 1., 0.),
         ..Default::default()
-    }).insert(LocalStateFlag);
+    }).insert(CleanupFlag);
 
     // torus
     commands.spawn(PbrBundle {
@@ -52,7 +52,7 @@ fn setup(
         material: materials.add(Color::ORANGE),
         transform: Transform::from_xyz(0., 1., 0.).with_rotation(Quat::from_rotation_x(PI / 2.0)),
         ..Default::default()
-    }).insert(LocalStateFlag);
+    }).insert(CleanupFlag);
 
     // cube
     commands.spawn(PbrBundle {
@@ -60,7 +60,7 @@ fn setup(
         material: materials.add(Color::YELLOW),
         transform: Transform::from_xyz(2., 1., 0.),
         ..Default::default()
-    }).insert(LocalStateFlag);
+    }).insert(CleanupFlag);
 
     // capsule
     commands.spawn(PbrBundle {
@@ -68,7 +68,7 @@ fn setup(
         material: materials.add(Color::GREEN),
         transform: Transform::from_xyz(-2., -1., 0.),
         ..Default::default()
-    }).insert(LocalStateFlag);
+    }).insert(CleanupFlag);
 
     // cylinder
     commands.spawn(PbrBundle {
@@ -76,7 +76,7 @@ fn setup(
         material: materials.add(Color::BLUE),
         transform: Transform::from_xyz(0., -1., 0.),
         ..Default::default()
-    }).insert(LocalStateFlag);
+    }).insert(CleanupFlag);
 
     // plane
     commands.spawn(PbrBundle {
@@ -84,13 +84,13 @@ fn setup(
         material: materials.add(Color::VIOLET),
         transform: Transform::from_xyz(2., -1., 0.),
         ..Default::default()
-    }).insert(LocalStateFlag);
+    }).insert(CleanupFlag);
 }
 
 fn system() {
 }
 
-fn cleanup(mut commands: Commands, query: Query<Entity, With<LocalStateFlag>>) {
+fn cleanup(mut commands: Commands, query: Query<Entity, With<CleanupFlag>>) {
     println!("Shapes cleanup");
     for entity in query.iter() {
         commands.entity(entity).despawn_recursive();
