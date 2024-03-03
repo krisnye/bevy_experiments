@@ -117,7 +117,7 @@ fn system() {
 fn cleanup(mut commands: Commands, query: Query<Entity, With<LocalStateFlag>>) {
     println!("Physics Blocks cleanup");
     for entity in query.iter() {
-        commands.entity(entity).despawn();
+        commands.entity(entity).despawn_recursive();
     }
 }
 
