@@ -3,8 +3,8 @@ use bevy_egui::EguiPlugin;
 use bevy_xpbd_3d::prelude::*;
 
 mod plugins;
-pub mod main_menu;
-
+mod main_menu;
+mod utils;
 use plugins::*;
 
 fn main() {
