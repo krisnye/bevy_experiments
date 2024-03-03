@@ -83,7 +83,6 @@ fn system() {
 }
 
 fn cleanup(mut commands: Commands, query: Query<Entity, With<CleanupFlag>>) {
-    println!("Triangle cleanup");
     for entity in query.iter() {
         commands.entity(entity).despawn_recursive();
     }
