@@ -12,3 +12,11 @@ bevy_xpbd_2d = "0.4.2"
 bevy_xpbd_3d = "0.4.2"
 strum = "0.26.1"
 strum_macros = "0.26.1"
+
+[[bin]]
+name = "main"
+path = "src/main.rs"
+
+[[bin]]
+name = "flow_test"
+path = "src/tools/flow_test.rs"

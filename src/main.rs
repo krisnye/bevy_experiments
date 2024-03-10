@@ -5,6 +5,9 @@ use bevy_xpbd_3d::prelude::*;
 mod plugins;
 mod main_menu;
 mod utils;
+pub mod physics;
+pub mod data;
+
 use plugins::*;
 
 fn main() {
