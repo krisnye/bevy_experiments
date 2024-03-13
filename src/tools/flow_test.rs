@@ -1,5 +1,12 @@
-use bevy_experiments::physics;
-use physics::volume::*;
+mod voxel_materials;
+
+use bevy_experiments::physics::*;
+use bevy_experiments::physics::heat_transfer::{apply_heat_to_volume, calculate_heat_transfer_volume};
+use bevy_experiments::physics::test::{fill_volume_with_test_material, fill_with_heat_source_and_sink};
+use crate::voxel_materials::create_test_materials;
+
+// To automatically run and rerun this on changes:
+//  nodemon -w src -e rs -x "cargo run --bin flow_test"
 
 //  what are we going to simulate, something cool I hope.
 //  calculation of what fails/breaks where?
@@ -11,31 +18,37 @@ use physics::volume::*;
 //  -----------------------------------------
 //  |   |   |   |   |   |   |   |   |   |   |
 //  -----------------------------------------
-//  |   |   |   |   |   |   |   |   |   |   |
+//  |   |   |   |   |   |   |   |   |   | X |
 //  -----------------------------------------
-//  |   |   | X | X | X | X | X |   |   |   |
+//  |   |   | X | X | X | X | X |   |   | X |
 //  -----------------------------------------
-//  |   | X |   | X |   |   |   |   |   |   |
+//  |   | X |   | X |   |   |   |   |   | X |
 //  -----------------------------------------
-//  | X |   |   | X |   |   |   |   |   |   |
+//  | X |   |   | X |   |   |   |   |   | X |
 //  -----------------------------------------
 
 fn main() {
-    let size = (4, 3, 2); // Dimensions for the volume
-    let initial_value = 0.0_f32; // Initial value for all cells
-    let mut volume = Volume::new(size, initial_value);
+    let size = Size { x: 5, y: 4, z: 3 };
 
-    // Populate the volume with some sample data
-    for z in 0..size.2 {
-        for y in 0..size.1 {
-            for x in 0..size.0 {
-                let value = ((x + y + z) as f32) * 1.234; // Just a sample calculation
-                let idx = volume.index(x, y, z);
-                volume.data[idx] = value;
-            }
-        }
+    let lookup = create_test_materials();
+    let mut material: Volume<MaterialId> = Volume::new(size, 0);
+    let mut temperature: Volume<Temperature> = Volume::new(size, kelvin::ROOM_TEMPERATURE);
+    fill_volume_with_test_material(&mut material, &lookup);
+    fill_with_heat_source_and_sink(&mut material, &mut temperature, &lookup);
+
+    let mut heat: Volume<HeatTransferRate> = Volume::new(size, 0.0);
+    let time_delta = 100.0;
+
+    for _i in 0 .. 10000 {
+        calculate_heat_transfer_volume(&material, &temperature, &mut heat, &lookup);
+        apply_heat_to_volume(&material, &mut temperature, &heat, &lookup, time_delta);
     }
 
-    // Visualize the volume with a specified display length for each element
-    volume.print_volume(6);
+    println!("material\n");
+    material.print(10);
+    println!("temperature\n");
+    temperature.print(10);
+    println!("heat\n");
+    heat.print(10);
+
 }

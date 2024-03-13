@@ -6,7 +6,6 @@ mod plugins;
 mod main_menu;
 mod utils;
 pub mod physics;
-pub mod data;
 
 use plugins::*;
 

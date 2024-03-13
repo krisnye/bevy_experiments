@@ -10,8 +10,8 @@ mod model;
 pub enum AppState {
     Triangle,
     Shapes,
-    PhysicsBlocks,
     #[default]
+    PhysicsBlocks,
     Model,
 }
 

@@ -1,23 +1,33 @@
 use std::fmt::Display;
 
+#[derive(Debug, Clone, Copy)]
+pub struct Size {
+    pub x: usize,
+    pub y: usize,
+    pub z: usize,
+}
+
+impl Size {
+    pub fn product(&self) -> usize {
+        return self.x * self.y * self.z;
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct Volume<T: Copy + Display> {
-    pub size: (usize, usize, usize), // Dimensions as a tuple
+    pub size: Size, // Dimensions as a tuple
     pub data: Vec<T>,
 }
 
 impl<T: Copy + Display> Volume<T> {
-    pub fn new(size: (usize, usize, usize), initial_value: T) -> Self {
-        let (width, height, depth) = size;
-        let num_voxels = width * height * depth;
-        let data = vec![initial_value; num_voxels];
-
+    pub fn new(size: Size, initial_value: T) -> Self {
+        let data = vec![initial_value; size.product()];
         Volume { size, data }
     }
 
     // Helper method to calculate the linear index
     pub fn index(&self, x: usize, y: usize, z: usize) -> usize {
-        z * self.size.0 * self.size.1 + y * self.size.0 + x
+        (z * self.size.y + y) * self.size.x + x
     }
 
     // Get a copy of the value at specified coordinates
@@ -33,18 +43,20 @@ impl<T: Copy + Display> Volume<T> {
     }
 
     // Function to visualize the volume with padding/truncation
-    pub fn print_volume(&self, length: usize) {
-        let (width, height, depth) = self.size;
-        for z in 0..depth {
-            for y in 0..height {
-                for x in 0..width {
+    pub fn print(&self, length: usize) {
+        let mut indent = " ".to_string();
+        for z in 0..self.size.z {
+            for y in (0..self.size.y).rev() {
+                print!("{}", indent);
+                for x in 0..self.size.x {
                     let idx = self.index(x, y, z);
-                    let value = format!("{:1$.1$}", self.data[idx].to_string(), length);
+                    let value = format!("{:>1$.1$}", self.data[idx].to_string(), length);
                     print!("{} ", value);
                 }
                 println!(); // End of a row
             }
             println!(); // Separate layers
+            indent.push_str("  ");
         }
     }
 }
