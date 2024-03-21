@@ -62,7 +62,7 @@ fn setup(
     })
         .insert(ScreenSpaceAmbientOcclusionBundle::default())   //  screen space ambient occlusion!
         .insert(CleanupFlag);
-    // Orion's preferred fighting arena: Infinite Flat Plane
+    // Infinite Flat Plane
     commands.spawn((
         PbrBundle {
             mesh: meshes.add(Mesh::from(primitives::Plane3d { normal: Direction3d::Y })),
@@ -77,8 +77,6 @@ fn setup(
     let material_black = materials.add(Color::rgb(0.4, 0.2, 0.3));
 
     let size = 1.0;
-    //  slightly smaller physics size to avoid overlapping initial position warning from physics solver.
-    let smaller_size = size * 0.999;
     // Cube
     for x in -4 .. 4 {
         for y in 0 ..= 0 {

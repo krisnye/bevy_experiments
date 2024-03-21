@@ -1,5 +1,5 @@
 use bevy::{
-    pbr::{CascadeShadowConfigBuilder, DirectionalLightShadowMap},
+    pbr::{CascadeShadowConfigBuilder},
     prelude::*,
 };
 use std::f32::consts::*;

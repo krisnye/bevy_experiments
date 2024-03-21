@@ -72,7 +72,7 @@ fn remove_component_for_testing(
 struct MyModel(Vec3);
 
 fn on_my_model_added(
-    mut query: Query<(Entity, &MyModel), Without<Transform>>,
+    query: Query<(Entity, &MyModel), Without<Transform>>,
     mut commands: Commands,
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut meshes: ResMut<Assets<Mesh>>,

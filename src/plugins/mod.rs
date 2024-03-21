@@ -7,16 +7,15 @@ mod physics_blocks;
 mod model;
 mod voxel_editor;
 mod model_view_system;
-use strum::IntoEnumIterator; // Needed for AppState.iter()
 
 #[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, States, EnumIter, Display)]
 pub enum AppState {
     Triangle,
     Shapes,
     PhysicsBlocks,
+    #[default]
     VoxelEditor,
     Model,
-    #[default]
     ModelViewSystem
 }
 
