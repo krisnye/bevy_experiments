@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 bevy = "0.13.0"
 bevy_egui = "0.25.0"
+bevy_panorbit_camera = "0.16.1"
 bevy_xpbd_2d = "0.4.2"
 bevy_xpbd_3d = "0.4.2"
 strum = "0.26.1"

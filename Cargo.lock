@@ -552,6 +552,7 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "bevy_egui",
+ "bevy_panorbit_camera",
  "bevy_xpbd_2d",
  "bevy_xpbd_3d",
  "strum",
@@ -752,6 +753,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3075c01f2b1799945892d5310fc1836e47c045dfe6af5878a304a475931a0c5f"
 dependencies = [
  "glam",
+]
+
+[[package]]
+name = "bevy_panorbit_camera"
+version = "0.16.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c2ae36af26f6c75067cba3fac09fbd4cbe7fc565492cc6064338a9e0063363db"
+dependencies = [
+ "bevy",
 ]
 
 [[package]]
