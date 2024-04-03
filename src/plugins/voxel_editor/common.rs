@@ -1,5 +1,4 @@
-use bevy::math::Vec3;
-use bevy::prelude::{Component, Quat, Transform};
+use bevy::{prelude::*, utils::HashMap};
 
 pub const LENGTH: u32 = 8;
 
@@ -34,7 +33,8 @@ impl Bounds {
     }
 
     pub fn contains(&self, other: &Bounds) -> bool {
-        self.position.min(other.position) == self.position && self.max().max(other.max()) == self.max()
+        self.position.min(other.position) == self.position
+            && self.max().max(other.max()) == self.max()
     }
 
     pub const LENGTH: Bounds = Bounds {
@@ -47,3 +47,4 @@ impl Bounds {
         size: Vec3::splat(1.0),
     };
 }
+

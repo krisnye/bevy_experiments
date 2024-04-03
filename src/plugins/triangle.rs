@@ -66,6 +66,7 @@ fn setup(
             [0.0, 0.0, 1.0, 1.0], // Color for bottom right vertex
         ]),
     );
+    // optionally add indexes. If you don't then non-indexed vertices are drawn.
     mesh.insert_indices(Indices::U32(vec![0, 1, 2])); // Indices for the triangle
 
     //  meshes not getting cleaned up on exit?  memory leak TODO.

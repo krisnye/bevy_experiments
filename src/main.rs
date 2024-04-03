@@ -11,6 +11,11 @@ use plugins::*;
 
 fn main() {
     let mut app = App::new();
+
+    // app.insert_resource(WindowDescriptor {
+    //     vsync: false, // Disable VSync
+    //     ..Default::default()
+    // })
     app.insert_state::<AppState>(AppState::default())
         .add_plugins(DefaultPlugins)
         .add_plugins(EguiPlugin)

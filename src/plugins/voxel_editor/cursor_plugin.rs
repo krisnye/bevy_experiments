@@ -4,10 +4,10 @@ use bevy::pbr::NotShadowCaster;
 use bevy::prelude::*;
 
 #[derive(Component, Copy, Clone, PartialEq)]
-struct Cursor;
+pub struct Cursor;
 
 #[derive(Component, Copy, Clone, PartialEq)]
-struct Selection {
+pub struct Selection {
     pub start: Vec3,
     pub end: Vec3,
 }
