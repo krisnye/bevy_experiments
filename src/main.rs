@@ -1,5 +1,7 @@
 use bevy::prelude::*;
+use bevy::window::PresentMode;
 use bevy_egui::EguiPlugin;
+use bevy_panorbit_camera::PanOrbitCameraPlugin;
 use bevy_xpbd_3d::prelude::*;
 
 mod plugins;
@@ -17,7 +19,14 @@ fn main() {
     //     ..Default::default()
     // })
     app.insert_state::<AppState>(AppState::default())
-        .add_plugins(DefaultPlugins)
+        .add_plugins(DefaultPlugins.set(WindowPlugin {
+            primary_window: Some(Window {
+                present_mode: PresentMode::Immediate,   // max rate so we can measure FPS performance.
+                ..default()
+            }),
+            ..default()
+        }))
+        .add_plugins(PanOrbitCameraPlugin)
         .add_plugins(EguiPlugin)
         .add_plugins(PhysicsPlugins::default())
         .add_plugins(main_menu::MainMenuPlugin);

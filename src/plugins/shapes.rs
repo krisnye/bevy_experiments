@@ -1,6 +1,7 @@
 use std::f32::consts::PI;
 use bevy::math::*;
 use bevy::prelude::*;
+use bevy_panorbit_camera::PanOrbitCamera;
 use super::AppState;
 
 pub struct ShapesPlugin;
@@ -33,10 +34,13 @@ fn setup(
     }).insert(CleanupFlag);
 
     //  camera
-    commands.spawn(Camera3dBundle {
-        transform: Transform::from_xyz(0.0, 0.0, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
-        ..default()
-    }).insert(CleanupFlag);
+    commands.spawn((
+        Camera3dBundle {
+            transform: Transform::from_xyz(0.0, 0.0, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
+            ..default()
+            },
+        PanOrbitCamera::default()
+    )).insert(CleanupFlag);
 
     // sphere
     commands.spawn(PbrBundle {

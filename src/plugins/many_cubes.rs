@@ -4,15 +4,16 @@ use bevy::math::primitives;
 use bevy::render::mesh::{PrimitiveTopology, VertexAttributeValues};
 use bevy::render::render_asset::RenderAssetUsages;
 use bevy::{pbr::CascadeShadowConfigBuilder, prelude::*};
-use bevy_panorbit_camera::{PanOrbitCamera, PanOrbitCameraPlugin};
+use bevy_panorbit_camera::{PanOrbitCamera};
 use rand::{random, Rng};
 use std::f32::consts::*;
 
 /**
 Lessons learned:
 - drawing adjacent PBR meshes with the same material is faster than with alternating materials.
-- 1 million cube meshes -> 64ms frame time
-- 1 large equivalent mesh ->
+- drawing a single large mesh is much faster than drawing many small meshes
+    - 1 million cube meshes -> 430ms frame time 2 fps
+    - 1 large equivalent mesh -> 15ms frame time 75 fps
 **/
 
 #[derive(Component)]
@@ -36,7 +37,6 @@ impl PluginGroup for ManyCubesPluginGroup {
     fn build(self) -> PluginGroupBuilder {
         PluginGroupBuilder::start::<Self>()
             .add(ManyCubesPlugin)
-            .add(PanOrbitCameraPlugin)
     }
 }
 
@@ -67,7 +67,7 @@ fn setup(
         })
         .insert(CleanupFlag);
 
-    let count = 200;
+    let count = 250;
 
     //  camera
     commands
@@ -132,7 +132,7 @@ fn setup(
     }
 
     //  BEGIN CREATE A SINGLE VERY LARGE MESH
-    if (SINGLE_MESH) {
+    if SINGLE_MESH {
         let mut mesh = Mesh::new(
             PrimitiveTopology::TriangleList,
             RenderAssetUsages::RENDER_WORLD,

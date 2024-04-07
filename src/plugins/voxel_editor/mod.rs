@@ -3,14 +3,12 @@ mod cursor_plugin;
 mod voxel_lookup_plugin;
 
 use super::AppState;
-use crate::utils;
 use bevy::app::PluginGroupBuilder;
 use bevy::math::*;
 use bevy::prelude::*;
 use bevy_egui::*;
-use bevy_panorbit_camera::{PanOrbitCamera, PanOrbitCameraPlugin};
+use bevy_panorbit_camera::{PanOrbitCamera};
 use bevy_experiments::physics::materials::*;
-use bevy_experiments::physics::*;
 use common::*;
 use cursor_plugin::*;
 use voxel_lookup_plugin::*;

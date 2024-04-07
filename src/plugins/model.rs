@@ -3,6 +3,7 @@ use bevy::{
     prelude::*,
 };
 use std::f32::consts::*;
+use bevy_panorbit_camera::PanOrbitCamera;
 use super::AppState;
 
 #[derive(Component)]
@@ -55,7 +56,8 @@ fn setup(
             diffuse_map: asset_server.load("environment_maps/pisa_diffuse_rgb9e5_zstd.ktx2"),
             specular_map: asset_server.load("environment_maps/pisa_specular_rgb9e5_zstd.ktx2"),
             intensity: 250.0,
-        }
+        },
+        PanOrbitCamera::default()
     )).insert(CleanupFlag);
 
     //  load the flight helmet scene

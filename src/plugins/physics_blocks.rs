@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use bevy::math::*;
 use bevy::pbr::ScreenSpaceAmbientOcclusionBundle;
+use bevy_panorbit_camera::PanOrbitCamera;
 use super::AppState;
 use bevy_xpbd_3d::prelude::*;
 
@@ -45,16 +46,19 @@ fn setup(
         ..default()
     }).insert(CleanupFlag);
     // Camera
-    commands.spawn(Camera3dBundle {
-        camera: Camera {
-            hdr: true,
+    commands.spawn((
+       Camera3dBundle {
+            camera: Camera {
+                hdr: true,
+                ..default()
+            },
+            transform: Transform::from_xyz(-4.0, 6.5, 28.0).looking_at(Vec3::new(0., 8., 0.), Vec3::Y),
             ..default()
         },
-        transform: Transform::from_xyz(-4.0, 6.5, 28.0).looking_at(Vec3::new(0., 8., 0.), Vec3::Y),
-        ..default()
-    })
-        .insert(ScreenSpaceAmbientOcclusionBundle::default())   //  screen space ambient occlusion!
-        .insert(CleanupFlag);
+       PanOrbitCamera::default(),
+       ScreenSpaceAmbientOcclusionBundle::default(),
+       CleanupFlag
+    ));
     // Orion's preferred fighting arena: Infinite Flat Plane
     commands.spawn((
         RigidBody::Static,
