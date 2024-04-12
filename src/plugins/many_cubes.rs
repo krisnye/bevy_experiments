@@ -1,12 +1,12 @@
 use super::AppState;
 use bevy::app::PluginGroupBuilder;
 use bevy::math::primitives;
-use bevy::render::mesh::{PrimitiveTopology, VertexAttributeValues};
-use bevy::render::render_asset::RenderAssetUsages;
 use bevy::{pbr::CascadeShadowConfigBuilder, prelude::*};
 use bevy_panorbit_camera::{PanOrbitCamera};
-use rand::{random, Rng};
+use rand::{Rng};
 use std::f32::consts::*;
+use crate::utils::mesh_builder::MeshBuilder;
+
 
 /**
 Lessons learned:
@@ -133,12 +133,7 @@ fn setup(
 
     //  BEGIN CREATE A SINGLE VERY LARGE MESH
     if SINGLE_MESH {
-        let mut mesh = Mesh::new(
-            PrimitiveTopology::TriangleList,
-            RenderAssetUsages::RENDER_WORLD,
-        );
-
-        let mut data = VertexData::create();
+        let mut mesh_builder = MeshBuilder::create();
 
         for x in 0..width {
             for z in 0..depth {
@@ -150,8 +145,7 @@ fn setup(
                 let wave_height = (x as f32 / 20.0).sin() * 10.0
                     + (z as f32 / 30.0).cos() * 40.0 * count as f32 / 1000.; // Adjust multiplier for amplitude
                 let diagonal_position = (x + z) / stripe_thickness; // Calculate diagonal stripe index
-                add_cube(
-                    &mut data,
+                mesh_builder.add_cube(
                     Vec3::new(
                         x as f32 - width as f32 / 2.,
                         wave_height,
@@ -164,8 +158,7 @@ fn setup(
                     },
                 );
                 if height > 1 {
-                    add_tree(
-                        &mut data,
+                    mesh_builder.add_tree(
                         Vec3::new(
                             x as f32 - width as f32 / 2.,
                             wave_height,
@@ -177,20 +170,7 @@ fn setup(
             }
         }
 
-        mesh.insert_attribute(
-            Mesh::ATTRIBUTE_POSITION,
-            VertexAttributeValues::Float32x3(data.positions),
-        );
-        mesh.insert_attribute(
-            Mesh::ATTRIBUTE_NORMAL,
-            VertexAttributeValues::Float32x3(data.normals),
-        );
-        mesh.insert_attribute(
-            Mesh::ATTRIBUTE_COLOR,
-            VertexAttributeValues::Float32x4(data.colors),
-        );
-
-        let mesh_handle = meshes.add(mesh);
+        let mesh_handle = mesh_builder.to_mesh(meshes);
         let material_handle = materials.add(Color::WHITE);
 
         // add the big mesh
@@ -203,152 +183,6 @@ fn setup(
             })
             .insert(CleanupFlag);
     }
-}
-
-struct VertexData {
-    positions: Vec<[f32; 3]>,
-    normals: Vec<[f32; 3]>,
-    colors: Vec<[f32; 4]>,
-}
-
-impl VertexData {
-    pub fn create() -> Self {
-        Self {
-            positions: Vec::new(),
-            normals: Vec::new(),
-            colors: Vec::new(),
-        }
-    }
-}
-
-fn add_tree(data: &mut VertexData, position: Vec3, height: u32) {
-    for y in 0..height {
-        add_cube(
-            data,
-            Vec3::new(position.x, position.y + y as f32, position.z),
-            Color::rgb(0.647, 0.165, 0.165),
-        );
-    }
-    let radius = 4;
-    //  add a sphere of leaves at the top within a radius
-    for x in -radius..=radius {
-        for z in -radius..=radius {
-            for y in -radius..=radius {
-                if Vec3::new(x as f32, y as f32, z as f32).length() <= radius as f32 {
-                    add_cube(
-                        data,
-                        Vec3::new(
-                            position.x + x as f32,
-                            position.y + y as f32 + height as f32,
-                            position.z + z as f32,
-                        ),
-                        Color::rgb(0.0, 1.0, 0.0),
-                    );
-                }
-            }
-        }
-    }
-}
-
-fn add_cube(data: &mut VertexData, position: Vec3, color: Color) {
-    //  positive z face
-    add_face(
-        data,
-        position,
-        color,
-        Vec3::new(0.0, 0.0, 1.0),
-        Vec3::new(0.5, -0.5, 0.0),
-    );
-    //  negative z face
-    add_face(
-        data,
-        position,
-        color,
-        Vec3::new(0.0, 0.0, -1.0),
-        Vec3::new(-0.5, -0.5, 0.0),
-    );
-    //  positive x face
-    add_face(
-        data,
-        position,
-        color,
-        Vec3::new(1.0, 0.0, 0.0),
-        Vec3::new(0.0, -0.5, -0.5),
-    );
-    //  negative x face
-    add_face(
-        data,
-        position,
-        color,
-        Vec3::new(-1.0, 0.0, 0.0),
-        Vec3::new(0.0, -0.5, 0.5),
-    );
-    //  positive y face
-    add_face(
-        data,
-        position,
-        color,
-        Vec3::new(0.0, 1.0, 0.0),
-        Vec3::new(0.5, 0.0, 0.5),
-    );
-    //  skip negative y face as we never look from underneath
-}
-
-//  bot_right_corner_tangent is a vector pointing from the center of the face to the bottom right corner.
-fn add_face(
-    data: &mut VertexData,
-    position: Vec3,
-    color: Color,
-    normal: Vec3,
-    bot_right_corner_tangent: Vec3,
-) {
-    let x = position.x;
-    let y = position.y;
-    let z = position.z;
-
-    let top_right_corner_tangent = normal.cross(bot_right_corner_tangent);
-    //  Vec3::new(0.5, -0.5, 0.0)
-    let center = position + normal / 2.0;
-    let top_left = center - bot_right_corner_tangent;
-    let top_right = center + top_right_corner_tangent;
-    let bot_right = center + bot_right_corner_tangent;
-    let bot_left = center - top_right_corner_tangent;
-
-    data.positions.extend(
-        [
-            top_left.to_array(),
-            bot_left.to_array(),
-            bot_right.to_array(),
-            top_left.to_array(),
-            bot_right.to_array(),
-            top_right.to_array(),
-        ]
-        .iter(),
-    );
-    let normal_elements = [normal.x, normal.y, normal.z];
-    data.normals.extend(
-        [
-            normal_elements,
-            normal_elements,
-            normal_elements,
-            normal_elements,
-            normal_elements,
-            normal_elements,
-        ]
-        .iter(),
-    );
-    let color_elements = [color.r(), color.g(), color.b(), color.a()];
-    data.colors.extend(
-        [
-            color_elements,
-            color_elements,
-            color_elements,
-            color_elements,
-            color_elements,
-            color_elements,
-        ]
-        .iter(),
-    );
 }
 
 fn system(time: Res<Time>, mut query: Query<&mut Transform, With<DirectionalLight>>) {

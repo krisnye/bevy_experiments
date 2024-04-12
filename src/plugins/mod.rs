@@ -11,6 +11,7 @@ mod shapes;
 mod triangle;
 mod voxel_editor;
 mod many_cubes;
+mod physics_new;
 
 #[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, States, EnumIter, Display)]
 pub enum AppState {
@@ -20,8 +21,9 @@ pub enum AppState {
     VoxelEditor,
     Model,
     ModelViewSystem,
-    #[default]
     ManyCubes,
+    #[default]
+    PhysicsNew,
 }
 
 pub fn add_systems(app: &mut App) {
@@ -34,5 +36,6 @@ pub fn add_systems(app: &mut App) {
         model::ModelPlugin,
         model_view_system::ModelViewSystemPluginGroup,
         many_cubes::ManyCubesPluginGroup,
+        physics_new::PhysicsNewPluginGroup,
     ));
 }

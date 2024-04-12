@@ -21,3 +21,11 @@ https://www.khanacademy.org/science/physics/thermodynamics/specific-heat-and-hea
     A = vs ^ 2
     d / A = 1 / (2 vs)
     r = 1 / (2 vs k)
+
+*----  *----
+|   |  |   |
+----*  ----*
+
+----*  ----*
+|   |  |   |
+*----  *----
