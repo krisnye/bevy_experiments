@@ -14,6 +14,8 @@ use plugins::*;
 fn main() {
     let mut app = App::new();
 
+    plugins::init(&mut app);
+
     // app.insert_resource(WindowDescriptor {
     //     vsync: false, // Disable VSync
     //     ..Default::default()

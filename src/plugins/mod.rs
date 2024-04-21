@@ -26,6 +26,13 @@ pub enum AppState {
     PhysicsNew,
 }
 
+
+pub fn init(
+    app: &mut App
+) {
+    physics_new::init(app);
+}
+
 pub fn add_systems(app: &mut App) {
     app.add_plugins((
         FPSDisplayPluginGroup,

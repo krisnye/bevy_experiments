@@ -2,10 +2,10 @@ use bevy::app::PluginGroupBuilder;
 use bevy::math::*;
 use bevy::prelude::*;
 use bevy_egui::{egui, EguiContexts};
-use bevy_egui::egui::TextureHandle;
 use bevy_panorbit_camera::PanOrbitCamera;
-use bevy_experiments::physics::{Position, Velocity};
+use bevy_experiments::physics::{Gravity, Position, Velocity};
 use bevy_experiments::physics::systems::PhysicsPlugin;
+use bevy_experiments::physics::PhysicsWorld;
 use crate::utils::mesh_builder::MeshBuilder;
 use super::AppState;
 
@@ -35,6 +35,12 @@ impl PluginGroup for PhysicsNewPluginGroup {
             .add(PhysicsNewPlugin)
             .add(PhysicsPlugin)
     }
+}
+
+pub fn init(
+    app: &mut App
+) {
+    app.insert_resource(PhysicsWorld::default());
 }
 
 fn setup(
@@ -75,6 +81,8 @@ fn setup(
     }).insert(CleanupFlag);
 
     //  Bounding World
+    let physics_world = PhysicsWorld::default();
+    commands.insert_resource(physics_world);
     let mut mesh_builder = MeshBuilder::create_with_uv_coordinates();
     mesh_builder.add_cube_inverted(Vec3::ZERO, Color::WHITE);
 
@@ -92,7 +100,18 @@ fn setup(
             PbrBundle {
                 mesh: mesh_handle,
                 material: material_handle,
-                transform: Transform::from_scale(Vec3::splat(16.)),
+                //  should also include translation to center.
+                transform: Transform::from_xyz(
+                    physics_world.bounds.center.x,
+                    physics_world.bounds.center.y,
+                    physics_world.bounds.center.z,
+                ).with_scale(
+                    Vec3::new(
+                        physics_world.bounds.half_extents.x * 2.,
+                        physics_world.bounds.half_extents.y * 2.,
+                        physics_world.bounds.half_extents.z * 2.,
+                    )
+                ),
                 ..Default::default()
             },
             CleanupFlag,
@@ -118,7 +137,8 @@ fn menu_system(
                     ..Default::default()
                 },
                 Position(Vec3::new(0.0, 0.0, 0.0)),
-                Velocity(Vec3::new(-2.0, 0.0, -10.0)),
+                Velocity(Vec3::new(-3.0, 0.0, -20.0)),
+                Gravity,
                 CleanupFlag,
             ));
         }
