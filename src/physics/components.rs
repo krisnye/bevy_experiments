@@ -2,10 +2,11 @@ use bevy::prelude::{Component, Entity, Reflect, Resource, Vec3};
 use bevy::render::primitives::Aabb;
 
 #[derive(Component, Debug, Copy, Clone, Reflect)]
-pub struct Position(pub Vec3);
-
-#[derive(Component, Debug, Copy, Clone, Reflect)]
-pub struct Velocity(pub Vec3);
+pub struct Particle {
+    pub position: Vec3,
+    pub velocity: Vec3,
+    pub mass: f32,
+}
 
 #[derive(Resource, Debug, Copy, Clone, Reflect)]
 pub struct PhysicsWorld {

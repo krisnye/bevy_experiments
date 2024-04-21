@@ -3,10 +3,9 @@ use bevy::math::*;
 use bevy::prelude::*;
 use bevy_egui::{egui, EguiContexts};
 use bevy_panorbit_camera::PanOrbitCamera;
-use bevy_experiments::physics::{Gravity, Position, Velocity};
+use bevy_experiments::physics::{Gravity, Particle, Spring};
 use bevy_experiments::physics::systems::PhysicsPlugin;
 use bevy_experiments::physics::PhysicsWorld;
-use crate::physics::Spring;
 use crate::utils::mesh_builder::MeshBuilder;
 use super::AppState;
 
@@ -137,8 +136,11 @@ fn menu_system(
                     transform: Transform::from_xyz(0., 0., 0.),
                     ..Default::default()
                 },
-                Position(Vec3::new(0.0, 0.0, 0.0)),
-                Velocity(Vec3::new(-3.0, 0.0, -20.0)),
+                Particle {
+                    position: Vec3::new(0.0, 0.0, 0.0),
+                    velocity: Vec3::new(-3.0, 0.0, -20.0),
+                    mass: 1.0,
+                },
                 Gravity,
                 CleanupFlag,
             ));
@@ -152,8 +154,11 @@ fn menu_system(
                     transform: Transform::from_xyz(0., 0., 0.),
                     ..Default::default()
                 },
-                Position(Vec3::new(0.0, 0.0, 0.0)),
-                Velocity(Vec3::new(-3.0, 0.0, -20.0)),
+                Particle {
+                    position: Vec3::new(0.0, 0.0, 0.0),
+                    velocity: Vec3::new(-3.0, 0.0, -20.0),
+                    mass: 1.0,
+                },
                 Gravity,
                 CleanupFlag,
             )).id();
@@ -164,8 +169,11 @@ fn menu_system(
                     transform: Transform::from_xyz(0., 0., 0.),
                     ..Default::default()
                 },
-                Position(Vec3::new(2.0, 1.0, 1.0)),
-                Velocity(Vec3::new(-3.0, 0.0, -25.0)),
+                Particle {
+                    position: Vec3::new(2.0, 1.0, 1.0),
+                    velocity: Vec3::new(-3.0, 0.0, -25.0),
+                    mass: 1.0,
+                },
                 Gravity,
                 CleanupFlag,
             )).id();
@@ -175,8 +183,8 @@ fn menu_system(
                     particle_a,
                     particle_b,
                     rest_length: 2.0,
-                    stiffness: 1.0,
-                    damping: 1.0,
+                    stiffness: 100.0,
+                    damping: 0.1,
                 },
                 CleanupFlag,
             ));
