@@ -1,6 +1,6 @@
 use bevy::app::{App, Plugin, Update};
-use bevy::prelude::{Changed, IntoSystemConfigs, Query, Res, Time, Transform, With};
-use crate::physics::{Position, Velocity, PhysicsWorld, Gravity, Mass};
+use bevy::prelude::{Changed, Entity, IntoSystemConfigs, Query, Res, Time, Transform, Vec3, With};
+use crate::physics::{Position, Velocity, PhysicsWorld, Gravity, Spring, Mass};
 
 pub struct PhysicsPlugin;
 
@@ -9,6 +9,7 @@ impl Plugin for PhysicsPlugin {
         app
             .add_systems(Update, gravitational_acceleration)
             .add_systems(Update, move_position.after(gravitational_acceleration))
+            .add_systems(Update, spring_system.after(move_position))
             .add_systems(Update, position_transform.after(move_position))
         ;
     }
@@ -70,7 +71,7 @@ fn move_position(
     }
 }
 
-fn position_transform(time: Res<Time>, mut query: Query<(&Position, &mut Transform), Changed<Position>>) {
+fn position_transform(mut query: Query<(&Position, &mut Transform), Changed<Position>>) {
     for (position, mut transform) in query.iter_mut() {
         transform.translation = position.0;
     }
@@ -82,7 +83,31 @@ fn gravitational_acceleration(
     mut query: Query<(&mut Velocity), With<Gravity>>,
 ) {
     let acceleration = physics_world.gravity * time.delta_seconds();
-    for (mut velocity) in query.iter_mut() {
+    for mut velocity in query.iter_mut() {
         velocity.0 += acceleration;
     }
+}
+
+fn spring_system(
+    mut query: Query<(Entity, &mut Position, &mut Velocity)>,
+    spring_query: Query<&Spring>,
+) {
+    let mut forces = std::collections::HashMap::<Entity, Vec3>::new();
+
+    // for spring in spring_query.iter() {
+    //     let (mut particle_a, mut particle_b) = query.get_many_mut([spring.particle_a, spring.particle_b]).unwrap();
+    //     let displacement = particle_b.position - particle_a.position;
+    //     let distance = displacement.length();
+    //     let force_magnitude = spring.stiffness * (distance - spring.rest_length) - spring.damping * (particle_b.velocity - particle_a.velocity).dot(displacement/distance);
+    //     let force = displacement.normalize() * force_magnitude;
+    //     forces.entry(spring.particle_a).or_insert(Vec3::ZERO). += force;
+    //     forces.entry(spring.particle_b).or_insert(Vec3::ZERO). -= force;
+    // }
+    //
+    // for (entity, force) in forces {
+    //     if let Ok((_, mut particle)) = query.get_mut(entity) {
+    //         let acceleration = force / particle.mass;
+    //         particle.velocity += acceleration;  // Integrate this force over time to update velocity
+    //     }
+    // }
 }

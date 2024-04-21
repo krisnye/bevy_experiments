@@ -1,4 +1,4 @@
-use bevy::prelude::{Component, Reflect, Resource, Vec3};
+use bevy::prelude::{Component, Entity, Reflect, Resource, Vec3};
 use bevy::render::primitives::Aabb;
 
 #[derive(Component, Debug, Copy, Clone, Reflect)]
@@ -28,3 +28,12 @@ pub struct Gravity;
 
 #[derive(Resource, Debug, Copy, Clone, Reflect)]
 pub struct GravitationalAcceleration(Vec3);
+
+#[derive(Component, Debug, Copy, Clone, Reflect)]
+pub struct Spring {
+    pub particle_a: Entity,
+    pub particle_b: Entity,
+    pub rest_length: f32,
+    pub stiffness: f32,
+    pub damping: f32,
+}
